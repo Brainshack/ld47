@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace LD47
 {
@@ -8,7 +11,8 @@ namespace LD47
     {
         public bool isHitScan = true;
 
-        public int shotsPerSecond = 1;
+        public float shotsPerSecond = 2f;
+        public float autoFireShotsPerSecond = 0.2f;
 
         public bool isAutomatic = true;
 
@@ -17,41 +21,50 @@ namespace LD47
         public int hitScanDamage = 1;
 
         public UnityEvent<Vector3> OnWeaponHit;
+
+        [FormerlySerializedAs("enforceFireRate")] public bool enforceAutoFireRate;
         
         private bool firing = false;
-        
-        
 
+        public float maxDeviation = 2f;
+
+        private float earliestNextShot = 0;
+
+        private float lastShotTime;
+        
         public void StartFire()
         {
-            if (!firing && isAutomatic)
-            {
-                firing = true;
-                StartCoroutine(nameof(AutoFire));
-            }
+            firing = true;
         }
 
         public void StopFire()
         {
             firing = false;
+            earliestNextShot = lastShotTime + 1f / shotsPerSecond;
         }
 
-        IEnumerator AutoFire()
+        void Update()
         {
-            while (firing)
-            {
-                Fire();
-                yield return new WaitForSeconds(1f / shotsPerSecond);
-            }
-        }
+            if (!firing) return;
+            if (Time.time < earliestNextShot) return;
 
-        void Fire()
-        {
+            Debug.Log($"Time since we last shot {Time.time - lastShotTime}");
+            
+            lastShotTime = Time.time;
+            
             if (isHitScan)
             {
                 RaycastHit hit;
-                Debug.DrawRay(transform.position, transform.forward * 1000, Color.red, 0.2f);
-                if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, targetMask))
+                
+                Vector3 forwardVector = Vector3.forward;
+                float deviation = Random.Range(0f, maxDeviation);
+                float angle = Random.Range(0f, 360f);
+                forwardVector = Quaternion.AngleAxis(deviation, Vector3.up) * forwardVector;
+                forwardVector = Quaternion.AngleAxis(angle, Vector3.forward) * forwardVector;
+                forwardVector = transform.rotation * forwardVector;
+                
+                Debug.DrawRay(transform.position, forwardVector * 1000, Color.red, 0.2f);
+                if (Physics.Raycast(transform.position, forwardVector, out hit, 100f, targetMask))
                 {
                     if (hit.collider)
                     {
@@ -64,6 +77,15 @@ namespace LD47
                         }
                     }
                 }
+            }
+
+            if (!isAutomatic)
+            {
+                firing = false;
+            }
+            else
+            {
+                earliestNextShot = lastShotTime + 1f / autoFireShotsPerSecond;
             }
         }
     }

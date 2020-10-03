@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHitScan: 1
-  shotsPerSecond: 1
+  shotsPerSecond: 5
   isAutomatic: 1
   targetMask:
     serializedVersion: 2
@@ -135,6 +135,7 @@ MonoBehaviour:
   OnWeaponHit:
     m_PersistentCalls:
       m_Calls: []
+  maxDeviation: 2
 --- !u!1 &6769730856586183985
 GameObject:
   m_ObjectHideFlags: 0

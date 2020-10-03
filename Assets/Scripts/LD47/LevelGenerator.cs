@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -21,6 +21,12 @@ namespace LD47
         [FormerlySerializedAs("MapSize")] [Tooltip("Map Size squared")]
         public int mapSize = 32;
 
+        public bool randomizeSeed;
+
+        public Spawner spawner;
+
+        public int maxEnemies = 10;
+        
         private enum MapTile
         {
             Void,
@@ -32,7 +38,7 @@ namespace LD47
 
         private int _maxSteps;
 
-        private void Awake()
+        private void Init()
         {
             _tileMap = new MapTile[mapSize, mapSize];
             for (int x = 0; x < mapSize; x++)
@@ -46,12 +52,22 @@ namespace LD47
             _maxSteps = (mapSize * mapSize) / 2;
         }
 
+        private void Start()
+        {
+            Init();
+            Generate();
+        }
+
         public void Generate()
         {
 #if UNITY_EDITOR
-            Awake();
+            if (!EditorApplication.isPlaying)
+                Init();
 #endif
 
+            if (randomizeSeed)
+                seed = (int) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;;
+            
             Random.InitState(seed);
 
             var childCount = transform.childCount;
@@ -64,6 +80,7 @@ namespace LD47
 
             SpawnWalkers();
             AddWalls();
+            
             for (int x = 0; x < mapSize; x++)
             {
                 for (int y = 0; y < mapSize; y++)
@@ -71,16 +88,72 @@ namespace LD47
                     switch (_tileMap[x, y])
                     {
                         case MapTile.Floor:
-                            Instantiate(floorPrefab, new Vector3(x, 0, y), parent.rotation, parent);
+                            Instantiate(floorPrefab, MapToWorldPos(x, y), parent.rotation, parent);
                             break;
                         case MapTile.Wall:
-                            Instantiate(wallPrefab, new Vector3(x, 0, y), parent.rotation, parent);
+                            Instantiate(wallPrefab, MapToWorldPos(x, y), parent.rotation, parent);
                             break;
                     }
                 }
             }
+            
+            SpawnEnemies();
 
-            Debug.Log($"We now have {transform.childCount} children");
+        }
+
+        private static Vector3 MapToWorldPos(int x, int y)
+        {
+            return new Vector3(x, 0, y);
+        }
+
+        private Vector2Int GetRandomTileOfType(MapTile type)
+        {
+            List<Vector2Int> tiles = new List<Vector2Int>();
+
+            for (int x = 0; x < mapSize - 1; x++)
+            {
+                for (int y = 0; y < mapSize - 1; y++)
+                {
+                    if (_tileMap[x, y] == type)
+                        tiles.Add(new Vector2Int(x, y));
+                }
+            }
+
+            return tiles[Random.Range(0, tiles.Count)];
+        }
+
+        private void SpawnEnemies()
+        {
+            int spawnedEnemies = 0;
+
+            while (spawnedEnemies < maxEnemies)
+            {
+                var pos = GetRandomTileOfType(MapTile.Floor);
+
+                if (Random.Range(0, 3) == 0)
+                {
+                    spawner.SpawnEnemy(MapToWorldPos(pos.x, pos.y));
+                    spawnedEnemies++;
+                }
+                    
+            }
+        }
+
+        private int GetNeighbourCount(MapTile type, Vector2Int pos)
+        {
+            int count = 0;
+            for (int x = pos.x-1; x <= pos.x+1; x++)
+            {
+                for (int y = pos.y-1; y <= pos.y+1; y++)
+                {
+                    if (x != pos.x && y != pos.y)
+                    {
+                        if (isInMapBounds(new Vector2Int(x,y)) && _tileMap[x, y] == type) count++;
+                    }
+                }
+            }
+
+            return count;
         }
 
         private void AddWalls()
@@ -167,7 +240,7 @@ namespace LD47
                     {
                         var testDirection = availableDirections[k];
                         var testPos = currentPos + testDirection;
-                        if (testPos.x < 0 || testPos.x > mapSize -1 || testPos.y < 0 || testPos.y > mapSize -1)
+                        if (!isInMapBounds(testPos))
                             availableDirections.RemoveAt(k);
                     }
                     
@@ -181,6 +254,11 @@ namespace LD47
                     walkerPosition[j] = currentPos;
                 }
             }
+        }
+
+        private bool isInMapBounds(Vector2Int testPos)
+        {
+            return !(testPos.x < 0 || testPos.x > mapSize -1 || testPos.y < 0 || testPos.y > mapSize -1);
         }
     }
 }

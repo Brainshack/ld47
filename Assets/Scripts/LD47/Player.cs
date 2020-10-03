@@ -34,7 +34,7 @@ namespace LD47
             
             _health.OnDamageTaken.AddListener((int damage, Vector3 source) =>
             {
-                _cinemachineImpulse.GenerateImpulse(source - transform.position * ((float) damage / _health.maxHealth));
+               // _cinemachineImpulse.GenerateImpulse();
             });
             
             weapon.OnWeaponHit.AddListener((Vector3 hitPos) =>

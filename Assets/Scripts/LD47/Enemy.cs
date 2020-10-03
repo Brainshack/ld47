@@ -90,7 +90,6 @@ namespace LD47
         {
             if (_hasWeapon)
             {
-                Debug.Log("Stop fighting");
                 _weapon.StopFire();
                 isFighting = false;
             }
