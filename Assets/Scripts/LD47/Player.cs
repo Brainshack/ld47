@@ -18,21 +18,15 @@ namespace LD47
         public Weapon weapon;
         
         public Transform muzzleTransform;
+
+        public Material pathHighlightMaterial;
+
+        public LayerMask highlightMask;
         
         private void Awake()
         {
             Health = GetComponent<Health>();
             _cinemachineImpulse = GetComponent<CinemachineImpulseSource>();
-            Health.OnDeath.AddListener(() =>
-            {
-                //Debug.Log("Oh noes, player dead!!!!!!!!!!!!!!!!!!!!!");
-            });
-            
-            Health.OnDamageTaken.AddListener((int damage, Vector3 source) =>
-            {
-               // _cinemachineImpulse.GenerateImpulse();
-            });
-
         }
 
         public void resetPlayer()
@@ -40,7 +34,6 @@ namespace LD47
             Health.ResetHealth();
         }
         
-
         private void Update()
         {
             if (Input.GetMouseButtonDown(0))
@@ -51,6 +44,12 @@ namespace LD47
             if (Input.GetMouseButtonUp(0))
             {
                 weapon.StopFire();
+            }
+
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, Vector3.down * 50, out hit, highlightMask))
+            {
+                hit.collider.gameObject.GetComponentInChildren<MeshRenderer>().material = pathHighlightMaterial;
             }
         }
     }

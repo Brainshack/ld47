@@ -28,6 +28,15 @@ namespace LD47
 
         private bool firing = false;
 
+        private AudioManager _audio;
+
+        public AudioClip shotSound;
+
+        private void Awake()
+        {
+            _audio = FindObjectOfType<AudioManager>();
+        }
+
         public void StartFire()
         {
             firing = true;
@@ -49,6 +58,11 @@ namespace LD47
             var index = Random.Range(0, muzzleTransforms.Length);
             
             var spawnTransform = muzzleTransforms[index];
+            if (gameObject.CompareTag("Player"))
+                _audio.PlaySound(shotSound, transform.position, true);
+            else
+                _audio.PlaySound(shotSound, transform.position);
+            
             Instantiate(projectilePrefab, spawnTransform.position, spawnTransform.rotation);
             
             if (!isAutomatic)

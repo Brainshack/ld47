@@ -40,6 +40,11 @@ namespace LD47
                     _events.OnGameOver.Invoke();
                 });
             });
+            
+            _events.OnPlayerEnteredExit.AddListener(() =>
+            {
+                nextLevel();
+            });
 
             nextLevel();
         }

@@ -7,10 +7,12 @@ namespace LD47
     {
         public GameObject enemyPrefab;
         public GameObject playerPrefab;
+        public GameObject exitPrefab;
 
         private List<GameObject> _enemies = new List<GameObject>();
 
         private GameObject _player;
+        private GameObject _exit;
         
         public void ClearEnemies()
         {
@@ -35,6 +37,7 @@ namespace LD47
             if (_player == null)
             {
                 _player = Instantiate(playerPrefab, position, transform.rotation, transform);
+                _exit = Instantiate(exitPrefab, position, transform.rotation, transform);
             }
             else
             {
@@ -42,6 +45,13 @@ namespace LD47
             }
              
             _player.GetComponent<Player>().resetPlayer();
+
+            
+            //TODO: PLEASE KILL ME!!!!!
+            var exitPos = new Vector3(position.x, position.y - 1, position.z);
+            var rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            _exit.transform.position = exitPos;
+            _exit.transform.rotation = rotation;
             
             return _player;
         }

@@ -112,9 +112,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 850965d31b44498db2f1d7d781ce6b41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
-  speed: 10
-  knockBackForce: 75
+  damage: 5
+  speed: 50
+  knockBackForce: 5
 --- !u!135 &5447719179152279511
 SphereCollider:
   m_ObjectHideFlags: 0

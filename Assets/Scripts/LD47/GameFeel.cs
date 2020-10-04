@@ -6,7 +6,7 @@ namespace LD47
     public class GameFeel : MonoBehaviour
     {
 
-        public float longFreezeTime = 0.2f;
+        public float longFreezeTime = 0.5f;
         public float shortFreezeTime = 0.1f;
         public enum FreezeFrameType
         {
@@ -25,8 +25,7 @@ namespace LD47
         IEnumerator Freeze(FreezeFrameType type)
         {
             _canFreeze = false;
-            var originalScale = Time.timeScale;
-
+            
             float duration;
             if (type == FreezeFrameType.Long)
                 duration = longFreezeTime;
@@ -37,7 +36,7 @@ namespace LD47
             
             yield return new WaitForSecondsRealtime(duration);
             
-            Time.timeScale = originalScale;
+            Time.timeScale = 1;
             _canFreeze = true;
         }
     }

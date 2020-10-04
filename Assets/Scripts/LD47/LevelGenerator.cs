@@ -28,7 +28,7 @@ namespace LD47
         public int maxEnemies = 10;
         
         public Vector3 blockScale = new Vector3(2f, 2f, 2f);
-        
+
         private enum MapTile
         {
             Void,
@@ -46,13 +46,10 @@ namespace LD47
         {
             _gameEvents = GameEvents.Instance;
         
-            Init();
-            
             _gameEvents.OnGameSetup.AddListener((int seed) =>
             {
                 Generate(seed);
                 _gameEvents.OnAfterLevelGeneration.Invoke();
-                Debug.Log("Invoke OnGameplayStart");
                 _gameEvents.OnGameplayStart.Invoke();
             });
         }
@@ -73,11 +70,7 @@ namespace LD47
 
         public void Generate(int seed)
         {
-#if UNITY_EDITOR
-            if (!EditorApplication.isPlaying)
-                Init();
-#endif
-
+            Init();
             Random.InitState(seed);
 
             spawner.ClearEnemies();
@@ -85,7 +78,14 @@ namespace LD47
             var childCount = transform.childCount;
             for (int i = childCount - 1; i > 0; i--)
             {
-                DestroyImmediate(transform.GetChild(i).gameObject);
+                #if UNITY_EDITOR
+                    if (!EditorApplication.isPlaying)
+                        DestroyImmediate(transform.GetChild(i).gameObject);
+                    else
+                        Destroy(transform.GetChild(i).gameObject);
+                #else
+                    Destroy(transform.GetChild(i).gameObject);
+                #endif
             }
 
             var parent = transform;

@@ -22,5 +22,8 @@ namespace LD47
         public UnityEvent<int> OnGameSetup = new UnityEvent<int>();
         public UnityEvent OnAfterLevelGeneration = new UnityEvent();
         public UnityEvent OnGameplayStart = new UnityEvent();
+        public UnityEvent OnAllObjectivesMet = new UnityEvent();
+        public UnityEvent OnPlayerEnteredExit = new UnityEvent();
+        public UnityEvent OnEnemyDeath = new UnityEvent();
     }
 }

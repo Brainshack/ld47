@@ -56,6 +56,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 768
   deathParticles: {fileID: 8329523787153963591, guid: af209cb8d21cd234da439c868fb2bd21, type: 3}
+  deathAudio: {fileID: 8300000, guid: 474441e74368f394faa33bc10e720acc, type: 3}
+  hitAudio: {fileID: 8300000, guid: 14b4a8e4739b94941a6e880c3c40a1d2, type: 3}
 --- !u!114 &517849724910665563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,10 +73,34 @@ MonoBehaviour:
   maxHealth: 100
   OnDeath:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 474441e74368f394faa33bc10e720acc, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDamageTaken:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 14b4a8e4739b94941a6e880c3c40a1d2, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &517849724910665562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,6 +122,7 @@ MonoBehaviour:
   maxDeviation: 10
   projectilePrefab: {fileID: 0}
   muzzleTransforms: []
+  shotSound: {fileID: 8300000, guid: ed8ee151d7682454f9f1917ab94a5df1, type: 3}
 --- !u!65 &1630933971453529499
 BoxCollider:
   m_ObjectHideFlags: 0

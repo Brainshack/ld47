@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Runtime.CompilerServices;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace LD47
@@ -34,6 +35,11 @@ namespace LD47
         private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 
         private GameFeel _gameFeel;
+        private GameEvents _events;
+        private AudioManager _audio;
+
+        public AudioClip deathAudio;
+        public AudioClip hitAudio;
         
         private void Start()
         {
@@ -42,11 +48,14 @@ namespace LD47
             _hasWeapon = _weapon != null;
             _meshRenderer = GetComponentInChildren<MeshRenderer>();
 
+            _audio = FindObjectOfType<AudioManager>();
             _gameFeel = FindObjectOfType<GameFeel>();
             
             _mainTexture = _meshRenderer.material.mainTexture;
             _emissiveTexture = _meshRenderer.material.GetTexture (EmissionMap);
             _emissiveColor = _meshRenderer.material.GetColor(EmissionColor);
+
+            _events = GameEvents.Instance;
             
             GetComponent<Health>().OnDeath.AddListener(() =>
             {
@@ -55,11 +64,14 @@ namespace LD47
                     _gameFeel.FreezeFrame(GameFeel.FreezeFrameType.Long);
                     Instantiate(deathParticles, transform.position, transform.rotation);
                 }
+                _events.OnEnemyDeath.Invoke();
+                _audio.PlaySound(deathAudio, transform.position);
                 Destroy(gameObject);
             });
             
             GetComponent<Health>().OnDamageTaken.AddListener((int dmg, Vector3 pos) =>
             {
+                _audio.PlaySound(hitAudio, transform.position);
                 _gameFeel.FreezeFrame(GameFeel.FreezeFrameType.Short);
                 _meshRenderer.material.mainTexture = null;
                 _meshRenderer.material.SetTexture (EmissionMap, null);
