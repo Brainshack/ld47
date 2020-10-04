@@ -24,17 +24,49 @@ namespace LD47
         [FormerlySerializedAs("whatIsPlayer")] public LayerMask scanMask;
         private bool _hasWeapon;
 
+        public GameObject deathParticles;
+        private MeshRenderer _meshRenderer;
+
+        private Texture _mainTexture;
+        private Texture _emissiveTexture;
+        private Color _emissiveColor;
+        private static readonly int EmissionMap = Shader.PropertyToID("_EmissionMap");
+        private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
+
         private void Awake()
         {
             _player = GameObject.FindWithTag("Player").transform;
             _weapon = GetComponent<Weapon>();
             _hasWeapon = _weapon != null;
-
+            _meshRenderer = GetComponentInChildren<MeshRenderer>();
+            
+            _mainTexture = _meshRenderer.material.mainTexture;
+            _emissiveTexture = _meshRenderer.material.GetTexture (EmissionMap);
+            _emissiveColor = _meshRenderer.material.GetColor(EmissionColor);
+            
             GetComponent<Health>().OnDeath.AddListener(() =>
             {
-                // TODO: Add VFX and shit
+                if (deathParticles != null)
+                {
+                    Instantiate(deathParticles, transform.position, transform.rotation);
+                }
                 Destroy(gameObject);
             });
+            
+            GetComponent<Health>().OnDamageTaken.AddListener((int dmg, Vector3 pos) =>
+            {
+                _meshRenderer.material.mainTexture = null;
+                _meshRenderer.material.SetTexture (EmissionMap, null);
+                _meshRenderer.material.SetColor(EmissionColor, Color.white);
+                Invoke(nameof(ResetMaterial), 0.1f);
+            });
+        }
+
+        void ResetMaterial()
+        {
+            _meshRenderer.material.mainTexture = _mainTexture;
+            _meshRenderer.material.SetTexture (EmissionMap, _emissiveTexture);
+            _meshRenderer.material.SetColor(EmissionColor, _emissiveColor);
         }
 
         private void Update()
@@ -52,26 +84,17 @@ namespace LD47
                 {
                     StopFighting();
                 }
-
-                if (Physics.Raycast(transform.position, relativePos, out hit, 100f, scanMask))
+                else
                 {
-                    if (hit.transform.CompareTag("Player"))
-                    {
-                        transform.rotation = rotation;
+                    transform.rotation = rotation;
 
-                        if (_hasWeapon && _isInCombatRange && !isFighting)
-                        {
-                            StartFighting();
-                        }
-                        else if (!isFighting)
-                        {
-                            transform.Translate(Vector3.forward * (chaseSpeed * Time.deltaTime));
-                        }
-                    }
-                    else
+                    if (_hasWeapon && _isInCombatRange && !isFighting)
                     {
-                        if (_hasWeapon && isFighting)
-                            StopFighting();
+                        StartFighting();
+                    }
+                    else if (!isFighting)
+                    {
+                        transform.Translate(Vector3.forward * (chaseSpeed * Time.deltaTime));
                     }
                 }
             }

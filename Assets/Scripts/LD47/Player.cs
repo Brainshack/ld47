@@ -17,14 +17,10 @@ namespace LD47
 
         public Weapon weapon;
         
-        public LineRenderer weaponTraceRenderer;
-
         public Transform muzzleTransform;
         
         private void Awake()
         {
-            
-            weaponTraceRenderer.gameObject.SetActive(false);
             _health = GetComponent<Health>();
             _cinemachineImpulse = GetComponent<CinemachineImpulseSource>();
             _health.OnDeath.AddListener(() =>
@@ -36,21 +32,9 @@ namespace LD47
             {
                // _cinemachineImpulse.GenerateImpulse();
             });
-            
-            weapon.OnWeaponHit.AddListener((Vector3 hitPos) =>
-            {
-                StartCoroutine(ShowLineCast(hitPos));
-            });
+
         }
 
-        private IEnumerator ShowLineCast(Vector3 hitPos)
-        {
-            weaponTraceRenderer.gameObject.SetActive(true);
-            var positions = new[] {muzzleTransform.position, hitPos};
-            weaponTraceRenderer.SetPositions(positions);
-            yield return new WaitForSeconds(0.1f);
-            weaponTraceRenderer.gameObject.SetActive(false);
-        }
 
         private void Update()
         {

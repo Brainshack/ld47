@@ -22,8 +22,11 @@ namespace LD47
             transform.Translate(strafe, 0, translation);
 
             if (Input.GetKeyDown("escape")) {
-                // turn on the cursor
-                Cursor.lockState = CursorLockMode.None;
+                
+                if (Cursor.lockState == CursorLockMode.None)
+                    Cursor.lockState = CursorLockMode.Locked;
+                else
+                    Cursor.lockState = CursorLockMode.None;
             }
         }
     }

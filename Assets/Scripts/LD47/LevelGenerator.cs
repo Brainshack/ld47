@@ -27,6 +27,8 @@ namespace LD47
 
         public int maxEnemies = 10;
         
+        public Vector3 blockScale = new Vector3(2f, 2f, 2f);
+        
         private enum MapTile
         {
             Void,
@@ -101,9 +103,9 @@ namespace LD47
 
         }
 
-        private static Vector3 MapToWorldPos(int x, int y)
+        private Vector3 MapToWorldPos(int x, int y)
         {
-            return new Vector3(x, 0, y);
+            return new Vector3(blockScale.x * x, 0, blockScale.z * y);
         }
 
         private Vector2Int GetRandomTileOfType(MapTile type)
