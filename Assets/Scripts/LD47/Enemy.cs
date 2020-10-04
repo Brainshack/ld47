@@ -33,12 +33,16 @@ namespace LD47
         private static readonly int EmissionMap = Shader.PropertyToID("_EmissionMap");
         private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 
-        private void Awake()
+        private GameFeel _gameFeel;
+        
+        private void Start()
         {
             _player = GameObject.FindWithTag("Player").transform;
             _weapon = GetComponent<Weapon>();
             _hasWeapon = _weapon != null;
             _meshRenderer = GetComponentInChildren<MeshRenderer>();
+
+            _gameFeel = FindObjectOfType<GameFeel>();
             
             _mainTexture = _meshRenderer.material.mainTexture;
             _emissiveTexture = _meshRenderer.material.GetTexture (EmissionMap);
@@ -48,6 +52,7 @@ namespace LD47
             {
                 if (deathParticles != null)
                 {
+                    _gameFeel.FreezeFrame(GameFeel.FreezeFrameType.Long);
                     Instantiate(deathParticles, transform.position, transform.rotation);
                 }
                 Destroy(gameObject);
@@ -55,6 +60,7 @@ namespace LD47
             
             GetComponent<Health>().OnDamageTaken.AddListener((int dmg, Vector3 pos) =>
             {
+                _gameFeel.FreezeFrame(GameFeel.FreezeFrameType.Short);
                 _meshRenderer.material.mainTexture = null;
                 _meshRenderer.material.SetTexture (EmissionMap, null);
                 _meshRenderer.material.SetColor(EmissionColor, Color.white);

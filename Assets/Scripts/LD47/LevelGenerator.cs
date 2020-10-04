@@ -54,7 +54,7 @@ namespace LD47
             _maxSteps = (mapSize * mapSize) / 2;
         }
 
-        private void Start()
+        private void Awake()
         {
             Init();
             Generate();
@@ -100,7 +100,7 @@ namespace LD47
             }
             
             SpawnEnemies();
-
+            SpawnPlayer();
         }
 
         private Vector3 MapToWorldPos(int x, int y)
@@ -139,6 +139,12 @@ namespace LD47
                 }
                     
             }
+        }
+
+        private void SpawnPlayer()
+        {
+            var pos = GetRandomTileOfType(MapTile.Floor);
+            spawner.SpawnPlayer(MapToWorldPos(pos.x, pos.y));
         }
 
         private int GetNeighbourCount(MapTile type, Vector2Int pos)

@@ -28,10 +28,6 @@ namespace LD47
 
             if (rb != null)
             {
-                if (!other.transform.CompareTag("Player"))
-                {
-                    Debug.Log(transform.forward * knockBackForce);
-                }
                 rb.AddForce(transform.forward * knockBackForce);
             }
             

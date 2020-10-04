@@ -44,13 +44,10 @@ namespace LD47
             if (!firing) return;
             if (Time.time < earliestNextShot) return;
 
-            Debug.Log($"Time since we last shot {Time.time - lastShotTime}");
-            
             lastShotTime = Time.time;
 
             var index = Random.Range(0, muzzleTransforms.Length);
             
-            Debug.Log(index);
             var spawnTransform = muzzleTransforms[index];
             Instantiate(projectilePrefab, spawnTransform.position, spawnTransform.rotation);
             
