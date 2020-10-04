@@ -17,9 +17,14 @@ namespace LD47
         
         private void Awake()
         {
-            _currentHealth = maxHealth;
+            ResetHealth();
         }
 
+        public void ResetHealth()
+        {
+            _currentHealth = maxHealth;
+        }
+        
         public void TakeDamage(int damage, Transform damager)
         {
             OnDamageTaken.Invoke(damage, damager.position);

@@ -40,6 +40,23 @@ namespace LD47
 
         private int _maxSteps;
 
+        private GameEvents _gameEvents;
+
+        private void Start()
+        {
+            _gameEvents = GameEvents.Instance;
+        
+            Init();
+            
+            _gameEvents.OnGameSetup.AddListener((int seed) =>
+            {
+                Generate(seed);
+                _gameEvents.OnAfterLevelGeneration.Invoke();
+                Debug.Log("Invoke OnGameplayStart");
+                _gameEvents.OnGameplayStart.Invoke();
+            });
+        }
+
         private void Init()
         {
             _tileMap = new MapTile[mapSize, mapSize];
@@ -54,24 +71,17 @@ namespace LD47
             _maxSteps = (mapSize * mapSize) / 2;
         }
 
-        private void Awake()
-        {
-            Init();
-            Generate();
-        }
-
-        public void Generate()
+        public void Generate(int seed)
         {
 #if UNITY_EDITOR
             if (!EditorApplication.isPlaying)
                 Init();
 #endif
 
-            if (randomizeSeed)
-                seed = (int) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;;
-            
             Random.InitState(seed);
 
+            spawner.ClearEnemies();
+            
             var childCount = transform.childCount;
             for (int i = childCount - 1; i > 0; i--)
             {

@@ -11,7 +11,7 @@ namespace LD47
     [RequireComponent(typeof(Weapon))]
     public class Player : MonoBehaviour
     {
-        private Health _health;
+        public Health Health { get; private set; }
 
         private CinemachineImpulseSource _cinemachineImpulse;
 
@@ -21,20 +21,25 @@ namespace LD47
         
         private void Awake()
         {
-            _health = GetComponent<Health>();
+            Health = GetComponent<Health>();
             _cinemachineImpulse = GetComponent<CinemachineImpulseSource>();
-            _health.OnDeath.AddListener(() =>
+            Health.OnDeath.AddListener(() =>
             {
                 //Debug.Log("Oh noes, player dead!!!!!!!!!!!!!!!!!!!!!");
             });
             
-            _health.OnDamageTaken.AddListener((int damage, Vector3 source) =>
+            Health.OnDamageTaken.AddListener((int damage, Vector3 source) =>
             {
                // _cinemachineImpulse.GenerateImpulse();
             });
 
         }
 
+        public void resetPlayer()
+        {
+            Health.ResetHealth();
+        }
+        
 
         private void Update()
         {

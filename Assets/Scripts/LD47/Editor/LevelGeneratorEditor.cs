@@ -13,7 +13,7 @@ namespace LD47.Editor
             LevelGenerator levelGenerator = (LevelGenerator) target;
             if (GUILayout.Button("Generate Map"))
             {
-                levelGenerator.Generate();
+                levelGenerator.Generate(levelGenerator.seed);
             }
 
         }
