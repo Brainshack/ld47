@@ -52,6 +52,8 @@ namespace LD47
 
         private void Update()
         {
+            if (!enemyCountDisplay) return;
+            
             _aliveEnemies = FindObjectsOfType<Enemy>().Length;
 
             if (!_allObjectivesMet)

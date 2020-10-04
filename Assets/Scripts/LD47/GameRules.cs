@@ -14,6 +14,8 @@ namespace LD47
 
         private int _seed;
 
+        public int stage = 0;
+        
         public static GameRules Instance => _instance;
 
         private void Awake()
@@ -32,6 +34,7 @@ namespace LD47
             yield return new WaitForSecondsRealtime(0.1f);
             _events.OnAfterLevelGeneration.AddListener(() =>
             {
+                stage++;
                 _player = FindObjectOfType<Player>();
 
                 _player.Health.OnDeath.AddListener(() =>

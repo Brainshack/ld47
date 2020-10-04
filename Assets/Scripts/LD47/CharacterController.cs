@@ -6,13 +6,6 @@ namespace LD47
     {
         public float speed = 5f;
         
-
-        // Use this for initialization
-        void Start () {
-            // turn off the cursor
-            Cursor.lockState = CursorLockMode.Locked;		
-        }
-	
         // Update is called once per frame
         void Update () {
             // Input.GetAxis() is used to get the user's input
@@ -20,14 +13,6 @@ namespace LD47
             var translation = Input.GetAxis("Vertical") * speed * Time.deltaTime;
             var strafe = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
             transform.Translate(strafe, 0, translation);
-
-            if (Input.GetKeyDown("escape")) {
-                
-                if (Cursor.lockState == CursorLockMode.None)
-                    Cursor.lockState = CursorLockMode.Locked;
-                else
-                    Cursor.lockState = CursorLockMode.None;
-            }
         }
     }
 }

@@ -14,12 +14,13 @@ namespace LD47.UI
         public Button exitButton;
         public Button restartButton;
 
-        private void Awake()
+        private void Start()
         {
             _gameEvents = GameEvents.Instance;
             _gameRules = GameRules.Instance;
 
-            Debug.Log("Add  GameOver Listener for Start");
+            gameObject.SetActive(false);
+            
             _gameEvents.OnGameplayStart.AddListener(() =>
             {
                 Cursor.lockState = CursorLockMode.Locked;

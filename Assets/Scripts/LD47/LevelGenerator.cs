@@ -50,7 +50,6 @@ namespace LD47
             {
                 Generate(seed);
                 _gameEvents.OnAfterLevelGeneration.Invoke();
-                _gameEvents.OnGameplayStart.Invoke();
             });
         }
 

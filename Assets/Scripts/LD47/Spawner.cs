@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LD47
@@ -13,7 +14,14 @@ namespace LD47
 
         private GameObject _player;
         private GameObject _exit;
-        
+
+        private GameEvents _gameEvents;
+
+        private void Start()
+        {
+            _gameEvents = GameEvents.Instance;
+        }
+
         public void ClearEnemies()
         {
             foreach (var enemy in _enemies)
@@ -33,11 +41,11 @@ namespace LD47
         
         public GameObject SpawnPlayer(Vector3 position)
         {
-            Debug.Log("Spawning Player");
             if (_player == null)
             {
                 _player = Instantiate(playerPrefab, position, transform.rotation, transform);
                 _exit = Instantiate(exitPrefab, position, transform.rotation, transform);
+                _gameEvents.OnPlayerSpawn.Invoke(_player.GetComponent<Player>());
             }
             else
             {
@@ -47,7 +55,7 @@ namespace LD47
             _player.GetComponent<Player>().resetPlayer();
 
             
-            //TODO: PLEASE KILL ME!!!!!
+            
             var exitPos = new Vector3(position.x, position.y - 1, position.z);
             var rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
             _exit.transform.position = exitPos;

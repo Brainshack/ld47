@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
@@ -14,15 +15,26 @@ namespace LD47.UI
 
         public Image healthIcon;
 
-        public Health healthComponent;
+        private Health _healthComponent;
+
+        private GameEvents _gameEvents;
+
+        private void Start()
+        {
+            _gameEvents = GameEvents.Instance;
+            _gameEvents.OnPlayerSpawn.AddListener((player => { _healthComponent = player.GetComponent<Health>(); }));
+        }
 
         void Update()
         {
-            var color = healthColors.Evaluate((float) healthComponent.CurrentHealth / (float)healthComponent.maxHealth);
+            if (_healthComponent == null) return;
+            
+            var color = healthColors.Evaluate((float) _healthComponent.CurrentHealth /
+                                              (float) _healthComponent.maxHealth);
             healthText.color = color;
             healthIcon.color = color;
             healthText.fontSharedMaterial.SetColor(ID_GlowColor, color);
-            healthText.text = healthComponent.CurrentHealth.ToString();
+            healthText.text = _healthComponent.CurrentHealth.ToString();
         }
     }
 }

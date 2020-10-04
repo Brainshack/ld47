@@ -25,5 +25,6 @@ namespace LD47
         public UnityEvent OnAllObjectivesMet = new UnityEvent();
         public UnityEvent OnPlayerEnteredExit = new UnityEvent();
         public UnityEvent OnEnemyDeath = new UnityEvent();
+        public UnityEvent<Player> OnPlayerSpawn = new UnityEvent<Player>();
     }
 }

@@ -40,6 +40,8 @@ namespace LD47
 
         public AudioClip deathAudio;
         public AudioClip hitAudio;
+
+        private bool _engaged = false;
         
         private void Start()
         {
@@ -56,6 +58,13 @@ namespace LD47
             _emissiveColor = _meshRenderer.material.GetColor(EmissionColor);
 
             _events = GameEvents.Instance;
+
+            _engaged = false;
+            
+            _events.OnGameplayStart.AddListener(() =>
+            {
+                _engaged = true;
+            });
             
             GetComponent<Health>().OnDeath.AddListener(() =>
             {
@@ -89,6 +98,8 @@ namespace LD47
 
         private void Update()
         {
+            if (!_engaged) return;
+            
             if (Vector3.Distance(transform.position, _player.position) <= chaseDistance)
             {
                 RaycastHit hit;

@@ -11,6 +11,16 @@ namespace LD47
         public float speed;
 
         public float knockBackForce = 500f;
+
+        private void Start()
+        {
+            Invoke("Kill", 20f);
+        }
+
+        void Kill()
+        {
+            Destroy(gameObject);
+        }
         
         void Update()
         {

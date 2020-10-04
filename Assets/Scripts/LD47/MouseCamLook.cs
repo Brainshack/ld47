@@ -15,9 +15,18 @@ namespace LD47
         // smooth the mouse moving
         private Vector2 smoothV;
 
+        private GameEvents _gameEvents;
+        
         // Use this for initialization
         void Start () {
+            _gameEvents = GameEvents.Instance;
+            Cursor.lockState = CursorLockMode.None;
+            _gameEvents.OnGameplayStart.AddListener(() =>
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            });
             character = this.transform.parent.gameObject;
+            
         }
 	
         // Update is called once per frame
